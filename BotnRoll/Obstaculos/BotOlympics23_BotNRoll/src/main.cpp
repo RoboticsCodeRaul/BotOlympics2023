@@ -1,67 +1,23 @@
-/***
- This example was created by Dylan Denizon (dylandfd@gmail.com)
- on the 18th April 2022
-
- This code was made for the Bot'n Roll part of the Bot Olympics competition.
- https://botolympics.pt/
-
-Description:
-This file contains the code that serves as a base to start programming with the Bot'n Roll robots,
-dealing with the initiation of sensors and libraries in order to facilitate integration with the robots.
-Participants are advised to only write code inside the beacons:
-
-** USER CODE BEGIN code **
-
-// place here your code
-
-** CODE END code **
-
-in order to help in the organization of code beings and not to harm the initialization of sensors and libraries.
-Good luck and have fun
-*/
-
 /* PRIVATE CODE BEGIN Includes */
 #include <Wire.h>
 #include <BnrOneA.h>
 #include <Arduino.h>
 #include <LiDAR.h>
 
-/* PRIVATE CODE BEGIN Includes */
-/* USER CODE BEGIN Includes -------------------------- */
-
-// place your includes here
-
-/* CODE END Includes */
-
 /* PRIVATE CODE BEGIN DEFINE -------------------------- */
 #define SSPIN 2
-/* USER CODE BEGIN DEFINE */
-
-// place your defines here
-
-/* CODE END DEFINE */
-
-/* PRIVATE CODE BEGIN VARIABLES -------------------------- */
-/* USER CODE BEGIN VARIABLES */
-
-// place your variables here
-
-/* USER CODE END VARIABLES */
 
 /* PRIVATE CODE BEGIN CLASSES -------------------------- */
 BnrOneA one;
-/* USER CODE BEGIN CLASSES */
+int sensor0,sensor1,sensor2,sensor3,sensor4,sensor5,sensor6,sensor7;
+ uint16_t left;
+    uint16_t front;
+    uint16_t right;
 
-// place your classes here
+bool SegueEsq = false;
+void SegueDireita();
+void SegueEsquerda();
 
-/* USER CODE END CLASSES */
-
-/* PRIVATE CODE BEGIN FUNCTION PROTOTYPES -------------------------- */
-/* USER CODE BEGIN FUNCTION PROTOTYPES */
-
-// place your functions here
-
-/* USER CODE END FUNCTION PROTOTYPES */
 
 //  The setup function runs once when you press reset or power the board
 void setup()
@@ -123,14 +79,23 @@ void setup()
 
 //  The loop function runs over and over again forever
 void loop()
-{
 
+{
+sensor0 = one.readAdc(0);
+    sensor1 = one.readAdc(1);
+    sensor2 = one.readAdc(2);
+    sensor3 = one.readAdc(3);
+    sensor4 = one.readAdc(4);
+    sensor5 = one.readAdc(5);
+    sensor6 = one.readAdc(6);
+    sensor7 = one.readAdc(7);
+   
   
 
 
-    uint16_t left = Lidar.getLidarLeftDistance();
-    uint16_t front = Lidar.getLidarFrontDistance();
-    uint16_t right = Lidar.getLidarRightDistance();
+     left = Lidar.getLidarLeftDistance();
+     front = Lidar.getLidarFrontDistance();
+     right = Lidar.getLidarRightDistance();
 
      Serial.println("DISTANCE SENSOR VALUES: ");
 
@@ -140,38 +105,74 @@ void loop()
         "\nFront: " + String(front) + "mm" + 
         "\nRight: " + String(right) + "mm"
     ); 
+    if (SegueEsq == false )
+    {
+        SegueDireita ();
+        
+    }else {
+        SegueEsquerda();
+    }
+
+    if (sensor0 >= 500 || sensor1 >= 500 ||
+        sensor2 >= 500 || sensor3 >= 500 ||
+        sensor4 >= 500 || sensor5 >= 500 ||
+        sensor6 >= 500 || sensor7 >= 500) 
+    {
+        if (SegueEsq == false){
+            SegueEsq = true;
+        }else
+        {
+            SegueEsq = false;
+        }    
+        delay(100);
+    }
     
-    if (front > 170) {
+
+ /*    if (front < 15) {
+    one.lcd2(" Para ");
+    one.move(0, 0);
+    delay(500);
+    one.move(15,-15);
+    delay(1000);
+    } */
+
+    
+
+}
+
+
+void SegueDireita(){
+if (front > 170) {
    
-        if (right < 70) {
+        if (right < 100) {
         one.lcd2(" Afastar ");
         one.lcd2(right);
         one.move(20, 40);
         }
-        else if (right >= 70 && right <= 100) {
+        else if (right >= 100 && right <= 130) {
         one.lcd2(" Frente ");
         one.lcd2(right);
         one.move(30, 30);
         }
-        else if (right >= 100 && right <= 200) {
+        else if (right >= 130 && right <= 210) {
         one.lcd2(" Aprox ");
         one.lcd2(right);
         one.move(40, 20);
         }
-        else if (right >= 200) {
+        else if (right >= 210) {
         one.lcd2(" Aprox ");
         one.lcd2(right);
         one.move(75, 1);
         }
     }else{
-        if (right < 200 && left > 200) {
+        if (right < 210 && left > 210) {
             one.lcd2(" Esquerda ");
             one.lcd2(left);
             one.lcd2(" ");
             one.lcd2(right);
             one.move(-20, 30);
-            delay(170);
-        }else if(left < 150 && right < 150 ) {
+            delay(155);
+        }else if(left < 175 && right < 175 ) {
             one.lcd2(" 180º "); //virar 180
             one.lcd2(left);
             one.lcd2(" ");
@@ -181,12 +182,47 @@ void loop()
         }
 
     }
+}
 
- /*    if (front < 15) {
-    one.lcd2(" Para ");
-    one.move(0, 0);
-    delay(500);
-    one.move(15,-15);
-    delay(1000);
-    } */
+void SegueEsquerda (){
+        if (front > 275) {
+   
+        if (left < 100) {
+        one.lcd2(" Afastar ");
+        one.lcd2(left);
+        one.move(40, 25);
+        }
+        else if (left >= 100 && left <= 130) {
+        one.lcd2(" Frente ");
+        one.lcd2(left);
+        one.move(40, 40);
+        }
+        else if (left >= 130 && left <= 210) {
+        one.lcd2(" Aprox ");
+        one.lcd2(left);
+        one.move(25, 40);
+        }
+        else if (left >= 210) {
+        one.lcd2(" Aprox ");
+        one.lcd2(left);
+        one.move(1, 65);
+        }
+    }else{
+        if (left < 210 && right > 210) {
+            one.lcd2(" Direita ");
+            one.lcd2(right);
+            one.lcd2(" ");
+            one.lcd2(left);
+            one.move(70, 1);
+   /*          delay(90); */
+        }else if(right < 175 && left < 175 ) {
+            one.lcd2(" 180º "); //virar 180
+            one.lcd2(right);
+            one.lcd2(" ");
+            one.lcd2(left);
+            one.move(-30, 30);
+            delay(690);
+            one.move( 0, 0);
+    }
+    }
 }
