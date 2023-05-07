@@ -11,6 +11,7 @@
 BnrOneA one;
 int sensor0, sensor1, sensor2, sensor3, sensor4, sensor5, sensor6, sensor7;
 uint16_t left, front, right;
+float multi = 1.95;
 
 void segueLinha();
 void desviaParede();
@@ -68,12 +69,15 @@ void loop()
   // front = Lidar.getLidarFrontDistance();
   // delay(10);
 
-  if (front < 110)
+  if (front < 125)
   {
     one.brake(100, 100);
     delay(200);
     one.move(-40, 40);
     delay(270);
+    one.brake(100, 100);
+    one.move(10, 10);
+    delay(100);
     while (!check())
     {
       desviaParede();
@@ -116,11 +120,11 @@ void desviaParede()
   }
   else if (right >= 100 && right <= 200)
   {
-    one.move(30, 30);
+    one.move(60, 10);
   }
   else if (right > 200 && right <= 300)
   {
-    one.move(30, 20);
+    one.move(60, 10);
   }
   delay(30);
 }
@@ -140,43 +144,43 @@ void segueLinha()
 
   if (sensor0 >= lightSense)
   {
-    one.move(-10, 20);
+    one.move(-10 * multi, 20 * multi);
     // one.lcd1("Sensor 0");
   }
   else if (sensor7 >= lightSense)
   {
-    one.move(20, -10);
+    one.move(20 * multi, -10 * multi);
     // one.lcd1("Sensor 7");
   }
   else if (sensor1 >= lightSense)
   {
-    one.move(5, 16);
+    one.move(5 * multi, 16 * multi);
     // one.lcd1("Sensor 1");
   }
   else if (sensor6 >= lightSense)
   {
-    one.move(16, 5);
+    one.move(16 * multi, 5 * multi);
     // one.lcd1("Sensor 6");
   }
   else if (sensor2 >= lightSense)
   {
-    one.move(10, 17);
+    one.move(10 * multi, 17 * multi);
     // one.lcd1("Sensor 2");
   }
   else if (sensor5 >= lightSense)
   {
-    one.move(17, 10);
+    one.move(17 * multi, 10 * multi);
     // one.lcd1("Sensor 5");
   }
   else if (sensor3 >= lightSense)
   {
-    one.move(20, 20);
+    one.move(25 * multi, 25 * multi);
     // one.lcd1("Sensor 3");
   }
   else if (sensor4 >= lightSense)
   {
-    one.move(20, 20);
+    one.move(25 * multi, 25 * multi);
     // one.lcd1("Sensor 4");
   }
-  delay(30);
+  // delay(20);
 }
